@@ -2,8 +2,8 @@ import React from 'react';
 import { CloudProvider } from '../types/cloud';
 
 interface HeaderProps {
-  activeTab: 'dashboard' | 'resources' | 'trends' | 'recommendations' | 'python';
-  setActiveTab: (tab: 'dashboard' | 'resources' | 'trends' | 'recommendations' | 'python') => void;
+  activeTab: 'dashboard' | 'resources' | 'topology' | 'trends' | 'recommendations' | 'python';
+  setActiveTab: (tab: 'dashboard' | 'resources' | 'topology' | 'trends' | 'recommendations' | 'python') => void;
   provider: CloudProvider;
   setProvider: (provider: CloudProvider) => void;
   accountId: string;
@@ -78,6 +78,14 @@ export const Header: React.FC<HeaderProps> = ({
             }`}
           >
             Resources
+          </button>
+          <button
+            onClick={() => setActiveTab('topology')}
+            className={`transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+              activeTab === 'topology' ? 'text-cyan-400 font-semibold' : 'text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <span>Resource Map</span>
           </button>
           <button
             onClick={() => setActiveTab('trends')}

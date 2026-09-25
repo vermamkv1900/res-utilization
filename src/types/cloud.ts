@@ -63,6 +63,12 @@ export interface CloudResource {
   recommendedAction: string;
   remediationCommand: string;
   remediated?: boolean;
+  // Architecture & Topology Relationships
+  attachedToResourceId?: string;
+  connectedToResourceIds?: string[];
+  networkTier?: 'Edge & Ingress' | 'Compute Tier' | 'Storage Tier' | 'Database Tier';
+  vpcId?: string;
+  subnetId?: string;
 }
 
 export interface MonthlyCostPoint {

@@ -30,10 +30,11 @@ import { CostTrends } from './components/CostTrends';
 import { RecommendationsView } from './components/RecommendationsView';
 import { PythonCodeHub } from './components/PythonCodeHub';
 import { ExportReportModal } from './components/ExportReportModal';
+import { TopologyMap } from './components/TopologyMap';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<
-    'dashboard' | 'resources' | 'trends' | 'recommendations' | 'python'
+    'dashboard' | 'resources' | 'topology' | 'trends' | 'recommendations' | 'python'
   >('dashboard');
   const [provider, setProvider] = useState<CloudProvider>('aws');
   const [credentials, setCredentials] = useState<CloudCredentials>(INITIAL_AWS_CREDENTIALS);
@@ -213,6 +214,7 @@ export default function App() {
             resources={currentResources}
             monthlyTrends={currentTrends}
             onNavigateToResources={() => setActiveTab('resources')}
+            onNavigateToTopology={() => setActiveTab('topology')}
             onNavigateToRecommendations={() => setActiveTab('recommendations')}
             onNavigateToPython={() => setActiveTab('python')}
             onOpenConnectModal={() => setIsConnectModalOpen(true)}
@@ -223,6 +225,15 @@ export default function App() {
           <ResourceTable
             resources={currentResources}
             onToggleRemediate={handleToggleRemediate}
+          />
+        )}
+
+        {activeTab === 'topology' && (
+          <TopologyMap
+            resources={currentResources}
+            provider={provider}
+            onOpenConnectModal={() => setIsConnectModalOpen(true)}
+            onNavigateToRecommendations={() => setActiveTab('recommendations')}
           />
         )}
 

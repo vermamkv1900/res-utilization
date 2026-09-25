@@ -6,6 +6,7 @@ interface DashboardOverviewProps {
   resources: CloudResource[];
   monthlyTrends: MonthlyCostPoint[];
   onNavigateToResources: () => void;
+  onNavigateToTopology: () => void;
   onNavigateToRecommendations: () => void;
   onNavigateToPython: () => void;
   onOpenConnectModal: () => void;
@@ -16,6 +17,7 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
   resources,
   monthlyTrends,
   onNavigateToResources,
+  onNavigateToTopology,
   onNavigateToRecommendations,
   onNavigateToPython,
   onOpenConnectModal,
@@ -69,6 +71,12 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
+          <button
+            onClick={onNavigateToTopology}
+            className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-950/70 text-cyan-300 border border-cyan-700/50 hover:bg-cyan-900/50 transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5"
+          >
+            <span>Resource Map</span>
+          </button>
           <button
             onClick={onOpenConnectModal}
             className="px-3.5 py-1.5 text-xs font-semibold rounded-lg bg-cyan-400 text-slate-950 hover:bg-cyan-300 transition-colors whitespace-nowrap cursor-pointer flex items-center gap-1.5"
@@ -286,12 +294,18 @@ export const DashboardOverview: React.FC<DashboardOverviewProps> = ({
             </div>
           </div>
 
-          <div className="pt-4 border-t border-slate-800">
+          <div className="pt-4 border-t border-slate-800 grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <button
+              onClick={onNavigateToTopology}
+              className="py-2 text-xs font-semibold text-cyan-300 bg-cyan-950/60 border border-cyan-800/60 rounded-lg hover:bg-cyan-900/60 transition-colors text-center cursor-pointer"
+            >
+              Interactive Resource Map →
+            </button>
             <button
               onClick={onNavigateToResources}
-              className="w-full py-2 text-xs font-semibold text-cyan-400 bg-cyan-950/40 border border-cyan-800/40 rounded-lg hover:bg-cyan-900/40 transition-colors text-center cursor-pointer"
+              className="py-2 text-xs font-semibold text-slate-300 bg-slate-900 border border-slate-800 rounded-lg hover:bg-slate-800 hover:text-white transition-colors text-center cursor-pointer"
             >
-              Inspect All {summary.totalResources} Resources in Detail →
+              Table View ({summary.totalResources}) →
             </button>
           </div>
         </div>
