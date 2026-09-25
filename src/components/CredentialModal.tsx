@@ -9,6 +9,8 @@ interface CredentialModalProps {
   onSaveAndScan: (creds: CloudCredentials) => void;
   onLoadSandbox: (provider: CloudProvider) => void;
   isScanning: boolean;
+  errorMessage?: string | null;
+  isLiveConnected?: boolean;
 }
 
 export const CredentialModal: React.FC<CredentialModalProps> = ({
@@ -18,6 +20,8 @@ export const CredentialModal: React.FC<CredentialModalProps> = ({
   onSaveAndScan,
   onLoadSandbox,
   isScanning,
+  errorMessage,
+  isLiveConnected,
 }) => {
   const [provider, setProvider] = useState<CloudProvider>(credentials.provider);
   const [accountId, setAccountId] = useState(credentials.accountId);
@@ -269,6 +273,28 @@ export const CredentialModal: React.FC<CredentialModalProps> = ({
                 </select>
               </div>
             </>
+          )}
+
+          {/* Error Feedback if live call fails */}
+          {errorMessage && (
+            <div className="p-3 bg-rose-950/40 border border-rose-800/80 rounded-lg text-xs text-rose-300 space-y-1">
+              <div className="font-semibold flex items-center gap-1.5">
+                <span>⚠️ Cloud Authentication / Scan Notice:</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-rose-200 font-mono">
+                {errorMessage}
+              </p>
+              <div className="text-[10px] text-slate-400 font-sans pt-1">
+                Tip: Ensure your IAM user has <code>ec2:Describe*</code> and <code>cloudwatch:GetMetricData</code>, or click 'Load Demo Workload' to test the interface.
+              </div>
+            </div>
+          )}
+
+          {isLiveConnected && (
+            <div className="p-3 bg-emerald-950/40 border border-emerald-800/80 rounded-lg text-xs text-emerald-300 flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span>Connected to live production cloud infrastructure!</span>
+            </div>
           )}
 
           {/* Security & Sandbox Tip */}

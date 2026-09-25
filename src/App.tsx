@@ -50,6 +50,8 @@ export default function App() {
   const [isConnectModalOpen, setIsConnectModalOpen] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [isScanning, setIsScanning] = useState(false);
+  const [scanError, setScanError] = useState<string | null>(null);
+  const [isLiveConnected, setIsLiveConnected] = useState(false);
 
   // Current active dataset based on provider
   const currentResources = provider === 'aws' ? awsResources : azureResources;
@@ -64,37 +66,73 @@ export default function App() {
   // Switch cloud provider
   const handleProviderChange = (newProvider: CloudProvider) => {
     setProvider(newProvider);
+    setScanError(null);
+    setIsLiveConnected(false);
     if (newProvider === 'aws') {
       setCredentials(INITIAL_AWS_CREDENTIALS);
+      setAwsResources(MOCK_AWS_RESOURCES);
     } else {
       setCredentials(INITIAL_AZURE_CREDENTIALS);
+      setAzureResources(MOCK_AZURE_RESOURCES);
     }
   };
 
   // Run audit scan with credentials
-  const handleSaveAndScan = (newCreds: CloudCredentials) => {
+  const handleSaveAndScan = async (newCreds: CloudCredentials) => {
     setCredentials(newCreds);
     setProvider(newCreds.provider);
     setIsScanning(true);
-    setIsConnectModalOpen(false);
+    setScanError(null);
 
-    setTimeout(() => {
+    try {
+      const res = await fetch('/api/scan', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newCreds),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        setScanError(data.details || data.error || 'Failed to authenticate with cloud provider');
+        setIsScanning(false);
+        return;
+      }
+
+      if (data.isLive) {
+        setIsLiveConnected(true);
+        if (data.resources && data.resources.length > 0) {
+          if (newCreds.provider === 'aws') {
+            setAwsResources(data.resources);
+          } else {
+            setAzureResources(data.resources);
+          }
+          setIsConnectModalOpen(false);
+        } else {
+          setScanError('Authenticated with AWS/Azure successfully! However, 0 instances or unattached volumes were discovered in this specific region. Try another region.');
+        }
+      } else {
+        // Placeholder or Demo Mode
+        setIsLiveConnected(false);
+        setIsConnectModalOpen(false);
+      }
+    } catch (err: any) {
+      setScanError(err.message || 'Error communicating with cloud proxy server.');
+    } finally {
       setIsScanning(false);
-    }, 900);
+    }
   };
 
   // Load Enterprise Sandbox
   const handleLoadSandbox = (targetProvider: CloudProvider) => {
     handleProviderChange(targetProvider);
+    setScanError(null);
     setIsConnectModalOpen(false);
   };
 
   // Quick Rescan
   const handleQuickRescan = () => {
-    setIsScanning(true);
-    setTimeout(() => {
-      setIsScanning(false);
-    }, 600);
+    handleSaveAndScan(credentials);
   };
 
   // Toggle remediation on a single resource
@@ -229,6 +267,8 @@ export default function App() {
         onSaveAndScan={handleSaveAndScan}
         onLoadSandbox={handleLoadSandbox}
         isScanning={isScanning}
+        errorMessage={scanError}
+        isLiveConnected={isLiveConnected}
       />
 
       {/* Export Report Modal */}
