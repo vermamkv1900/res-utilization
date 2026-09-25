@@ -1,0 +1,6 @@
+{
+  "name": "CloudPulse FinOps & Resource Optimizer",
+  "description": "Enterprise cloud cost analyzer and resource utilization monitor for AWS and Azure. Connect with credentials to audit active and inactive resources, track monthly usage trends, and execute cost-saving optimization recommendations.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
